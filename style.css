@@ -1,0 +1,33 @@
+#movieCard {
+    color: rgb(82, 80, 80);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 400px;
+    height: 400px;
+    background-color: rgb(167, 190, 190);
+    margin: 10px;
+    border-radius: 20px;
+}
+
+#content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.cardHeader {
+    background-color: rgba(215, 223, 105, 0.4);
+    margin-top: 20px;
+    border: 3px solid rgb(90, 140, 160);
+    border-radius: 20px;
+    padding: 10px;
+}
+
+.poster {
+    border-radius: 20px;
+    border: 3px double rgb(90, 140, 160);;
+    width: 250px;
+    height: 250px;
+    margin-top: 20px;
+}
