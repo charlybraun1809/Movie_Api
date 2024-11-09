@@ -1,5 +1,6 @@
 let trendingMovies = [];
 let allGenres = [];
+let movieLinks = [];
 let baseUrl = "https://api.themoviedb.org/3/"
 const options = {
     method: 'GET',
@@ -19,31 +20,37 @@ async function getData() {
         .then(res => res.json())
         .then(data => {
             trendingMovies = data.results;
-             renderMovies(trendingMovies);
+            console.log(trendingMovies);
+            renderMovies(trendingMovies);
         })
         .catch(err => console.error(err));
 }
 
 function renderMovies(movies) {
     let contentRef = document.getElementById('content');
-    movies.forEach(movie => {
+    movies.forEach((movie, index) => {
         let genreNames = getNamesById(movie.genre_ids);
-        contentRef.innerHTML += `
-        <div id="movieCard">
-            <div class="cardHeader">
-            ${movie.title}<br>
-            ${genreNames}
-            </div>
-            <img class="poster" src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title} poster"<img/>
-        </div>`
+        contentRef.innerHTML += getCardTemplate(genreNames, movie, index)
     });
+}
+
+async function openMoviePage(index) {
+    try {
+        let response = await fetch('moviePage.html');
+        let hmtlContent = await response.text();
+        //template hier in htmlContent einfügen
+        console.log(hmtlContent);
+        
+        
+    } catch (error) {
+        
+    }
 }
 
 async function fetchGenres() {
     let response = await fetch(`${baseUrl}genre/movie/list?language=en,`, options);
     let dataJson = await response.json();
     allGenres = dataJson.genres;
-    console.log(allGenres);
 }
 
 function getNamesById(movieNames) {
@@ -51,6 +58,10 @@ function getNamesById(movieNames) {
         let genre = allGenres.find(g => g.id === id);
         return genre.name;
     }).join(', ')
+}
+
+function addLink() {
+    let url = document.getElementById('link')
 }
 
 
