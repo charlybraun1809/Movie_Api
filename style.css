@@ -26,10 +26,31 @@
     height: 250px;
 }
 
-.cardFooter {
-    
-}
-
 .releaseDate {
     font-size: 12px;
+}
+
+.movieMainInfoWrapper {
+    width: 100%;
+    background-color: antiquewhite;
+}
+
+.movieMainInfoWrapper img {
+    width: 400px;
+    margin: 50px;
+}
+
+.maxWidth {
+    max-width: 1440px;
+    margin: 0px auto;
+}
+
+.movieInfoContent {
+    display: flex;
+}
+
+.movieInfoText {
+    display: flex;
+    flex-direction: column;
+    margin: 50px;
 }

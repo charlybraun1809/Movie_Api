@@ -1,7 +1,7 @@
 let trendingMovies = [];
 let allGenres = [];
-let movieLinks = [];
 let baseUrl = "https://api.themoviedb.org/3/"
+
 const options = {
     method: 'GET',
     headers: {
@@ -21,29 +21,38 @@ async function getData() {
         .then(data => {
             trendingMovies = data.results;
             console.log(trendingMovies);
+            
             renderMovies(trendingMovies);
         })
         .catch(err => console.error(err));
 }
 
-function renderMovies(movies) {
+async function renderMovies(movies) {
     let contentRef = document.getElementById('content');
-    movies.forEach((movie, index) => {
-        let genreNames = getNamesById(movie.genre_ids);
-        contentRef.innerHTML += getCardTemplate(genreNames, movie, index)
+    contentRef.innerHTML = '';
+    let genreNames = movies.map(movie => getNamesById(movie.genre_ids));
+    let videoLinks = await Promise.all(movies.map(movie => getMovieLink(movie.id)));
+    movies.forEach((movie) => {
+        contentRef.innerHTML += getCardTemplate(movie);
+    });
+    document.querySelectorAll('.poster').forEach((poster, index) => {
+        poster.addEventListener('click', () => openMoviePage(movies[index], genreNames[index], videoLinks[index]));
     });
 }
 
-async function openMoviePage(index) {
+async function openMoviePage(movie, genreNames, videoLink) {
     try {
+        let newTab = window.open('about:blank', '_blank');
         let response = await fetch('moviePage.html');
         let hmtlContent = await response.text();
-        //template hier in htmlContent einfügen
-        console.log(hmtlContent);
-        
-        
+        hmtlContent = hmtlContent.replace(
+            '<div id="contentMoviePage"></div>',
+            `<div id="contentMoviePage">${movieTemplate(movie, genreNames, videoLink)}</div>`
+        );
+        newTab.document.open();
+        newTab.document.write(hmtlContent);
+        newTab.document.close();
     } catch (error) {
-        
     }
 }
 
@@ -51,6 +60,8 @@ async function fetchGenres() {
     let response = await fetch(`${baseUrl}genre/movie/list?language=en,`, options);
     let dataJson = await response.json();
     allGenres = dataJson.genres;
+    console.log(allGenres);
+    
 }
 
 function getNamesById(movieNames) {
@@ -60,8 +71,17 @@ function getNamesById(movieNames) {
     }).join(', ')
 }
 
-function addLink() {
-    let url = document.getElementById('link')
+async function getMovieLink(movieId) {
+    try {
+        let response = await fetch(`${baseUrl}movie/${movieId}/videos?language=en-US`, options);
+        let dataJson = await response.json();
+        let videoKey = dataJson.results[0].key
+        let videoLink = `https://www.youtube.com/watch?v=${videoKey}`;
+        return videoLink;
+         
+    } catch (error) {
+        console.log('failed to fetch', error);
+    }
 }
 
 
